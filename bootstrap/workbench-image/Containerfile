@@ -3,6 +3,7 @@ FROM quay.io/modh/odh-generic-data-science-notebook@sha256:7bf5f368d452d461b7c65
 RUN pip install --upgrade pip
 
 RUN pip install pipenv \
+    langchain \
     langchain_aws \
     text_generation \
     opencv-python ultralytics \
