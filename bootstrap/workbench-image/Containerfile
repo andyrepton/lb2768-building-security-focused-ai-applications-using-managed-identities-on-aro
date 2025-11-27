@@ -4,6 +4,7 @@ RUN pip install --upgrade pip
 
 RUN pip install pipenv \
     langchain \
+    langchain_community \
     langchain_aws \
     text_generation \
     opencv-python ultralytics \
