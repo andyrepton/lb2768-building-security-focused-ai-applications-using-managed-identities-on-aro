@@ -352,7 +352,7 @@ spec:
             labels:
               notebook-name: $WORKBENCH_NAME
             annotations:
-              eks.amazonaws.com/role-arn=$WORKBENCH_IAM_ROLE_ARN
+              eks.amazonaws.com/role-arn: $WORKBENCH_IAM_ROLE_ARN
               serviceaccounts.openshift.io/oauth-redirectreference.first: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"$WORKBENCH_NAME"}}'
           EOF
 
