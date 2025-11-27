@@ -30,8 +30,7 @@ spec:
         openshift.io/imported-from: quay.io/rh-aiservices-bu/rhoai-lab-insurance-claim-workbench
       from:
         kind: DockerImage
-        name: ghcr.io/rh-mobb/rhoai-lab-insurance-claim-workbench:miwi
-        # ghcr.io/markwme/rhoai-lab-insurance-claim-workbench:2.1.3
+        name: ghcr.io/phbergsmann/ai-on-rosa-workshop/workbench:latest
       importPolicy:
         importMode: Legacy
       referencePolicy:

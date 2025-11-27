@@ -72,8 +72,7 @@ spec:
 
           # Define some variables
           WORKBENCH_NAME="my-workbench"
-          WORKBENCH_IMAGE="ic-workbench:miwi"
-          # WORKBENCH_IMAGE="rhoai-lab-insurance-claim-workbench:miwi"
+          WORKBENCH_IMAGE="ic-workbench:latest"
           PIPELINE_ENGINE="Tekton"
           WORKBENCH_LAB_GIT_REPOSITORY="https://github.com/phbergsmann/ai-on-rosa-workshop"
           WORKBENCH_IAM_ROLE_ARN="arn:aws:iam::527280309862:role/user1-bedrock-test"
