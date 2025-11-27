@@ -76,6 +76,7 @@ spec:
           # WORKBENCH_IMAGE="rhoai-lab-insurance-claim-workbench:miwi"
           PIPELINE_ENGINE="Tekton"
           WORKBENCH_LAB_GIT_REPOSITORY="https://github.com/phbergsmann/ai-on-rosa-workshop"
+          WORKBENCH_IAM_ROLE_ARN="arn:aws:iam::527280309862:role/user1-bedrock-test"
 
           for i in $(seq 1 $user_count);
           do
@@ -339,6 +340,20 @@ spec:
                 storage: 5Gi
             #storageClassName: ocs-storagecluster-ceph-rbd
             #volumeMode: Filesystem
+          EOF
+
+          # Create the workbench service account
+          cat << EOF | oc apply -f-
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: $WORKBENCH_NAME
+            namespace: $USER_PROJECT
+            labels:
+              notebook-name: $WORKBENCH_NAME
+            annotations:
+              eks.amazonaws.com/role-arn=$WORKBENCH_IAM_ROLE_ARN
+              serviceaccounts.openshift.io/oauth-redirectreference.first: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"$WORKBENCH_NAME"}}'
           EOF
 
           # Create the workbench
