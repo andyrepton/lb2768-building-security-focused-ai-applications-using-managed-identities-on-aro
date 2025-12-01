@@ -20,9 +20,10 @@ cd
 wget {azure_ai_info_url}
 cat .env
 
-. The `.env` file that is downloaded will look something like the following (but configured for your enviornment).  Note there are no credentials in it.  That is because the Azure Python SDK will use Azure Managed Identity (via OIDC) to authenticate your pods which are running under a trusted `ServiceAccount`, We'll finish up this trust relationship shortly.
+. The `.env` file that is downloaded will look something like the following (but configured for your enviornment).  Note there are no credentials in it.  That is because the AWS Python SDK will use IAM Roles for Service Accounts (IRSA) to authenticate your pods which are running under a trusted `ServiceAccount`, We'll finish up this trust relationship shortly.
 +
 
+TOFIX: Below should match AWS, don't have a working setup right now
 [.lines_space]
 [.console-input]
 [source, bash, subs="attributes+"]
@@ -34,49 +35,20 @@ AZURE_AI_SEARCH_SERVICE_NAME="my-ai-search"
 AZURE_AI_SEARCH_INDEX_NAME="my-ai-index"
 
 
-. When configuring Managed Identity, you need to create an Azure Managed Identity for the workload to use, Attach approprite roles and scopes to give it access to Azure resources, and then create a Federated Identity which creates the trust relationship between the Identity and the OpenShift ServiceAccount that will be running your `pods`.
+. When configuring your IRSA roles, you need to attach the correct policy for the workload to use. Attach appropriate policy permissions and assign the trust relationship to match the service account and namespace that will be used by your `pods`.
 +
 
-**Do not run the following commands** they have already been run for you, and are shown here to show you the Managed Identity relationship setup.
-+
-
-[.lines_space]
-[.console-input]
-[source, bash, subs="attributes+"]
-# az identity create --name "${user}-id" --resource-group "aro"
-# export OBJECT_ID="$(az identity show --name "${user}-id" \
-#    --resource-group "aro" --query 'principalId' -otsv)"
-# export CLIENT_ID="$(az identity show --name "${user}-id" \
-#    --resource-group "aro" --query 'clientId' -otsv)"
-# export AI_SEARCH_SCOPE="/subscriptions/XXX/resourceGroups/aro-ai/providers/Microsoft.Search/searchServices/ai"
-# export AI_SCOPE="/subscriptions/XXX/resourceGroups/aro-ai/providers/Microsoft.CognitiveServices/accounts/ai"
-# az role assignment create --assignee-object-id "${OBJECT_ID}" \
-#    --role "Search Index Data Reader" \
-#    --scope "$AI_SEARCH_SCOPE" \
-#    --assignee-principal-type ServicePrincipal
-# az role assignment create --assignee-object-id "${OBJECT_ID}" \
-#    --role "Cognitive Services OpenAI User" \
-#    --scope "$AI_SCOPE" \
-#    --assignee-principal-type ServicePrincipal
-# az identity federated-credential create \
-#    --name "${user}-id" \
-#    --identity-name "${user}-id" \
-#    --resource-group "aro-ai" \
-#    --issuer "<aro-id-issuer>" \
-#    --subject "system:serviceaccount:{user}:workbench"
-
-. This final command, which you will run in your terminal will annotate the `my-workbench` service account which the Jupyter Notebook, and later your deployed application will use to authenticate to the Azure services following the trust relationship built in the previous command.
+**Do not run the following commands** they have already been run for you, and are shown here to show you the IRSA setup.
 +
 
 [.lines_space]
 [.console-input]
 [source, bash, subs="attributes+"]
-oc -n {user} annotate sa my-workbench \
-  azure.workload.identity/client-id={user_assigned_identity_client_id}
-oc -n {user} rollout restart statefulset my-workbench
+TOFIX: Missing policy ARN at the moment. To be added later
+# rosa create iamserviceaccount --cluster ${cluster_id} --namespace ${user} --name workbench --policy
 
 . After a moment you'll get a message that says **"Server unavailable or unreachable
-Your server at /notebook/{user}/my-workbench/ is not running. Would you like to restart it?"**, This is because the Jupyter notebook is restarting so that it can use the Azure Managed Identity that we just linked to the service account.  Wait a minute or so and then refresh your browser window.
+Your server at /notebook/{user}/my-workbench/ is not running. Would you like to restart it?"**, This is because the Jupyter notebook is restarting so that it can use the new AWS Role that we just linked to the service account.  Wait a minute or so and then refresh your browser window.
 
 . In the left hand navigation menu, navigate to the folder called: `parasol-insurance/lab-materials/02`
 
@@ -96,6 +68,7 @@ image::02/02-05-restart-kernel.png[]
 . Running these cells will confirm that all the lab-required services are responding.
 
 The output should look as follows:
+TOFIX: Below output should match aws. Don't have a working setup right now
 
 [source,console]
 ----
